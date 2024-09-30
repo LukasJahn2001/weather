@@ -3,7 +3,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 import xarray as xr
-import const
+from mycode import const
 
 
 class CustomImageDataset(Dataset):

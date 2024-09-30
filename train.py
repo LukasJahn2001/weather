@@ -3,18 +3,20 @@ import time
 import numpy as np
 import torch
 from torch_geometric.graphgym import optim
-from argparse import ArgumentParser
-
+#from argparse import ArgumentParser
 from graph_weather import GraphWeatherForecaster
 from graph_weather.models.losses import NormalizedMSELoss
 from mycode.dataloader import CustomImageDataset
 from torch.utils.data import DataLoader
 
-parser = ArgumentParser()
-parser.add_argument('-d', '--dataset_path')
 
-args = parser.parse_args()
-print(type(args.dataset_path))
+print("Cuda", torch.cuda.is_available())
+
+#parser = ArgumentParser()
+#parser.add_argument('-d', '--dataset_path')
+
+#args = parser.parse_args()
+#print(type(args.dataset_path))
 
 
 running_loss = 0.
@@ -23,7 +25,7 @@ multi_step = 1
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 dataset = CustomImageDataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr', multi_step)
-dataloader = DataLoader(dataset, batch_size=16)
+dataloader = DataLoader(dataset, batch_size=1)
 
 
 # Here, we use enumerate(training_loader) instead of
@@ -51,11 +53,11 @@ for lat in latt:
 
 model = GraphWeatherForecaster(
     lat_lons,
-    edge_dim=128,
-    hidden_dim_processor_edge=128,
-    node_dim=128,
-    hidden_dim_processor_node=128,
-    hidden_dim_decoder=128,
+    edge_dim=32,
+    hidden_dim_processor_edge=32,
+    node_dim=32,
+    hidden_dim_processor_node=32,
+    hidden_dim_decoder=32,
     feature_dim=20, # feature_dim: Input feature size
     aux_dim=0, # aux_dim: Number of non-NWP features (i.e. landsea mask, lat/lon, etc) -> feature dim + aux dim = input_dim als input in dem Encoder
     num_blocks=6,
@@ -67,9 +69,15 @@ feature_variances = []  # has to be feature dim but does not work
 for var in range(20):
     feature_variances.append(0.0)
 i=0
-for epoch in range(100):
+
+
+
+for epoch in range(1):
+
+    start2 = time.time()
 
     for batch in dataloader:
+        batch = [b.to(device) for b in batch]
         start = time.time()
         optimizer.zero_grad()
         out = batch[0]
@@ -125,7 +133,8 @@ for epoch in range(100):
         )
 
         i = i + 1
-
+    end2 = time.time()
+    print(end2 - start2)
     torch.save(model.state_dict(), "/home/lukas/safes/safe.ckt")
 
 
