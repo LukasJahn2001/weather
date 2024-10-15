@@ -1,0 +1,10 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "time",
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Mean surface latent heat flux",
+    "short_name": "mslhf",
+    "units": "W m**-2"
+}

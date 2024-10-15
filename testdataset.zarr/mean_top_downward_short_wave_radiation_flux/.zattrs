@@ -1,0 +1,10 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "time",
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Mean top downward short-wave radiation flux",
+    "short_name": "mtdwswrf",
+    "units": "W m**-2"
+}

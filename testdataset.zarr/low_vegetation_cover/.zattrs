@@ -1,0 +1,9 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Low vegetation cover",
+    "short_name": "cvl",
+    "units": "(0 - 1)"
+}

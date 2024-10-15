@@ -1,0 +1,10 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "time",
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Mean surface net long-wave radiation flux",
+    "short_name": "msnlwrf",
+    "units": "W m**-2"
+}

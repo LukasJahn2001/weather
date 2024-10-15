@@ -1,0 +1,11 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "time",
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Sea ice area fraction",
+    "short_name": "siconc",
+    "standard_name": "sea_ice_area_fraction",
+    "units": "(0 - 1)"
+}

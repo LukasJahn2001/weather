@@ -1,0 +1,10 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "time",
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Mean top net long-wave radiation flux",
+    "short_name": "mtnlwrf",
+    "units": "W m**-2"
+}

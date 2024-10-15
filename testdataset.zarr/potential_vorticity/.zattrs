@@ -1,0 +1,11 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "time",
+        "level",
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Potential vorticity",
+    "short_name": "pv",
+    "units": "K m**2 kg**-1 s**-1"
+}

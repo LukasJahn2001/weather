@@ -1,0 +1,10 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "time",
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Volumetric soil water layer 4",
+    "short_name": "swvl4",
+    "units": "m**3 m**-3"
+}

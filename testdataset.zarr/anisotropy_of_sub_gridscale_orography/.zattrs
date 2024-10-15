@@ -1,0 +1,9 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Anisotropy of sub-gridscale orography",
+    "short_name": "isor",
+    "units": "~"
+}

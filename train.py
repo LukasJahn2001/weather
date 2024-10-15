@@ -80,6 +80,7 @@ for epoch in range(1):
         batch = [b.to(device) for b in batch]
         start = time.time()
         optimizer.zero_grad()
+        print(batch[0].shape)
         out = batch[0]
         print(len(batch))
 

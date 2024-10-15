@@ -1,0 +1,9 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Standard deviation of filtered subgrid orography",
+    "short_name": "sdfor",
+    "units": "m"
+}

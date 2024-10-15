@@ -1,0 +1,10 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "time",
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Mean vertically integrated moisture divergence",
+    "short_name": "mvimd",
+    "units": "kg m**-2 s**-1"
+}

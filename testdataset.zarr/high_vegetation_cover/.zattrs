@@ -1,0 +1,9 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "High vegetation cover",
+    "short_name": "cvh",
+    "units": "(0 - 1)"
+}

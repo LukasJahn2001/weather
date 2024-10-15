@@ -1,0 +1,11 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "time",
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Snow depth",
+    "short_name": "sd",
+    "standard_name": "lwe_thickness_of_surface_snow_amount",
+    "units": "m of water equivalent"
+}

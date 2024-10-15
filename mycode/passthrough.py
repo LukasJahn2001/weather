@@ -29,14 +29,14 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 model = GraphWeatherForecaster(
     lat_lons,
-    edge_dim=128,
-    hidden_dim_processor_edge=128,
-    node_dim=128,
-    hidden_dim_processor_node=128,
-    hidden_dim_decoder=128,
+    edge_dim=32,
+    hidden_dim_processor_edge=32,
+    node_dim=32,
+    hidden_dim_processor_node=32,
+    hidden_dim_decoder=32,
     feature_dim=20, # feature_dim: Input feature size
     aux_dim=0, # aux_dim: Number of non-NWP features (i.e. landsea mask, lat/lon, etc) -> feature dim + aux dim = input_dim als input in dem Encoder
-    num_blocks=2,
+    num_blocks=6,
 ).to(device)
 
 multi_step = 1

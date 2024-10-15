@@ -1,0 +1,9 @@
+{
+    "_ARRAY_DIMENSIONS": [
+        "longitude",
+        "latitude"
+    ],
+    "long_name": "Standard deviation of orography",
+    "short_name": "sdor",
+    "units": "m"
+}
