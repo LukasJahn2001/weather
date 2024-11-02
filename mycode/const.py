@@ -1,6 +1,10 @@
 FORECAST_MEANS = {
     "surface_pressure": 96722.66,
+    "2m_temperature": 278.69135,
     "mean_sea_level_pressure": 100952.98,
+
+    "10m_u_component_of_wind": -0.059063613,
+    "10m_v_component_of_wind": 0.19631831,
     "u_component_of_wind_0": 5.8080506,
     "v_component_of_wind_0": 0.0039521395,
     "geopotential_0": 199338.36,
@@ -84,6 +88,9 @@ FORECAST_MEANS = {
 FORECAST_STD = {
     "surface_pressure": 9001.101,
     "mean_sea_level_pressure": 1005.1818,
+    "2m_temperature": 20.630314,
+    "10m_u_component_of_wind": 3.5497575,
+    "10m_v_component_of_wind": 2.1116116,
     "u_component_of_wind_0": 12.903827,
     "v_component_of_wind_0": 3.1264277,
     "geopotential_0": 5608.396,

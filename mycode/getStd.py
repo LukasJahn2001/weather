@@ -1,9 +1,11 @@
 import xarray as xr
 
-data = xr.open_dataset('/home/lukas/datasets/1990-2017_6h_64x32_equiangular_conservative.zarr')
+data = xr.open_zarr('/home/lukas/datasets/1990-2017_6h_64x32_equiangular_conservative.zarr')
 
 print("\"surface_pressure\": " + str(data.surface_pressure.std().values) + ",")
-print("\"mean_sea_level_pressure\": " + str(data.mean_sea_level_pressure.std().values) + ",")
+print("\"2m_temperature\": " + str(data.variables["2m_temperature"].std().values) + ",")
+print("\"10m_u_component_of_wind\": " + str(data.variables["10m_u_component_of_wind"].std().values) + ",")
+print("\"10m_v_component_of_wind\": " + str(data.variables["10m_v_component_of_wind"].std().values) + ",")
 
 for lvl in range(0,13):
     lvlData = data.isel(level=lvl)
