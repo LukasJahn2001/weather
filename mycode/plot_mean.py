@@ -16,7 +16,8 @@ with open('/home/lukas/git/weather/losses.csv','r') as csvfile:
 a = []
 b = []
 
-numberOfAvg = 100
+# ceil((length - multistep)/ batch-size )* multistep)
+numberOfAvg = 8
 
 for count in range(int(math.floor(len(y)/numberOfAvg))):
     sum = 0

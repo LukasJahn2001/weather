@@ -10,6 +10,9 @@ from mycode.dataloader import CustomImageDataset
 from torch.utils.data import DataLoader
 import mycode.parameters as para
 
+torch.manual_seed(0)
+
+
 
 print("Cuda", torch.cuda.is_available())
 
@@ -22,7 +25,7 @@ print("Cuda", torch.cuda.is_available())
 
 running_loss = 0.
 last_loss = 0.
-multi_step = 1
+multi_step = 4
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 dataset = CustomImageDataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr', multi_step)
@@ -33,7 +36,7 @@ dataset = CustomImageDataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equi
 #     targets = torch.stack(targets)
 #     return features, targets
 
-dataloader = DataLoader(dataset, batch_size=4)
+dataloader = DataLoader(dataset, batch_size=3)
 
 
 # Here, we use enumerate(training_loader) instead of
@@ -52,99 +55,74 @@ model = GraphWeatherForecaster(
     num_blocks=6,
 ).to(device)
 
-# TODO seed fixen
+
+criterion = NormalizedMSELoss(lat_lons=para.lat_lons,
+                                            feature_variance=para.feature_variances,
+                                            device=device,
+
+                                            ).to(device)
 
 optimizer = optim.Adam(model.parameters(), lr=para.learning_rate)
 print("Done Setup")
-
-with open('losses.csv', 'w', newline='') as file:
-                writer = csv.writer(file)
-                field = ["time", "loss"]
-                writer.writerow(["time", "loss"])
-
 counter = 0
-i=0
 
-for epoch in range(100):
+with open('losses.csv', 'a', newline='') as file:
+    writer = csv.writer(file)
+    for epoch in range(10):
+        start_epoch = time.time()
+        for batch in dataloader:
+            print("Leng")
+            print(len(dataloader))
+            print(batch[0].shape)
+            print("END")
+            batch = [b.to(device) for b in batch]
+            optimizer.zero_grad()
+            out = batch[0]
 
-    start2 = time.time()
+            losses = []
+            print()
+            for j in range(0, len(batch)-1):
+                # Every data instance is an input + label pair
 
-    for batch in dataloader:
-        batch = [b.to(device) for b in batch]
-        start = time.time()
-        optimizer.zero_grad()
-        print(batch[0].shape)
-        out = batch[0]
-        print(len(batch))
+                target = batch[j+1]
+                # Zero your gradients for every batch!
+                outputs = model(out)
+                # Make predictions for this batch
+                
+                # TODO: Ändern sich die Parameter überhaupt. Schrittweise debuggen
 
-        losses = []
-        for j in range(0, len(batch)-1):
-            # Every data instance is an input + label pair
-
-            target = batch[j+1]
-            # Zero your gradients for every batch!
-            outputs = model(out)
-            # Make predictions for this batch
             
-            # TODO: Ändern sich die Parameter überhaupt. Schrittweise debuggen
 
-            criterion = NormalizedMSELoss(lat_lons=para.lat_lons,
-                                          feature_variance=para.feature_variances,
-                                          device=device,
+                loss = criterion(outputs, target)
 
-                                          ).to(device)
-            # TODO: criterion nach außen ziehen
-
-            loss = criterion(outputs, target)
-
-            with open('losses.csv', 'a', newline='') as file:
-                writer = csv.writer(file)
-                field = ["time", "loss"]
+                
                 writer.writerow([counter, loss.item()])
-                print(type(loss))
-            
-            # TODO: with open aus der Schleife raus 
+                    
+                
+                # TODO: with open aus der Schleife raus 
 
-            counter = counter + 1
+                counter = counter + 1
 
-            losses.append(loss) # tensor oder unten if
+                losses.append(loss) # tensor oder unten if
 
-            out = outputs
-
-
-
-
-        # Compute the loss and its gradients
-
-        # Adjust learning weights
+                out = outputs
 
 
 
-        for lo in losses:
-            print(lo)
-
-        loss_mean = torch.mean(torch.stack(losses))
-
-        loss_mean.backward()
-        optimizer.step()
 
 
-        # Gather data and report
-        running_loss += loss_mean.item()
-        end = time.time()
+            loss_mean = torch.mean(torch.stack(losses))
+
+            loss_mean.backward()
+            optimizer.step()
+
+        end_epoch = time.time()
+        print("Epoch " + str(epoch) + ": " + str(end_epoch - start_epoch) + "s")
 
 
-
-        print(
-            f"[{epoch + 1}, {i + 1:5d}] loss: {running_loss / (i + 1):.6f} Time: {end - start} sec"
-        )
-
-        i = i + 1
-    end2 = time.time()
-    print(end2 - start2)
-    torch.save(model.state_dict(), "/home/lukas/safes/safe.ckt")
+        torch.save(model.state_dict(), "/home/lukas/safes/safe.ckt")
 
 
 
-print("Finished Training")
+    print("Finished Training")
 

@@ -21,13 +21,18 @@ data4 = xr.open_zarr('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_
 
 # data3.variables["mean_sea_level_pressure"].values
 
+changed = data4.isel(time=slice(0, 2))
 
-print(time.strftime("%H:%M:%S"))
+print(changed.sizes.get('time'))
+print(changed)
 
 
-print(data4.isel(time=slice(0,2)).variables['time'].values)
+# print(time.strftime("%H:%M:%S"))
 
-print(pd.date_range(start='1/1/1959', periods=(4*365), freq='6h'))
+
+# print(data4.isel(time=slice(0,2)).variables['time'].values)
+
+# print(pd.date_range(start='1/1/1959', periods=(4*365), freq='6h'))
 
 '''
 

@@ -11,7 +11,8 @@ class CustomImageDataset(Dataset):
 
     def __init__(self, filepathdata, multi_step):
         self.multi_step = multi_step + 1
-        self.data = xr.open_zarr(filepathdata).isel(time=slice(0, 1))
+        self.data = xr.open_zarr(filepathdata).isel(time=slice(0, 9))
+        print(self.data)
 
     def __len__(self):
         return self.data.sizes.get('time') - self.multi_step + 1
@@ -22,15 +23,15 @@ class CustomImageDataset(Dataset):
 
     def __getitem__(self, timestamp):
         items = []
-        timestamp = timestamp -1 #eigentlich 0 TODO: Checken 
         for step in range(0, self.multi_step):
             levels = parameters.levels
             variablesWithLevels = parameters.variablesWithLevels
             variablesWithoutLevels = parameters.variablesWithoutLevels
 
-            # variablesWithoutLevels
             data = self.data.isel(time=timestamp + step)
-
+        
+        
+            # variablesWithoutLevels
             item_without_level = np.stack(
                 [
                     self.standardization(data.variables[var].values, const.FORECAST_MEANS[var], const.FORECAST_STD[var]) for
@@ -39,11 +40,6 @@ class CustomImageDataset(Dataset):
                 axis=-1,
             )
             
-            # [
-            #     print(self.standardization(data[f"{var}"].values, const.FORECAST_MEANS[var], const.FORECAST_STD[var])) for
-            #     var in variablesWithoutLevels
-            # ]
-
             item_with_level = np.stack(
                 [
                     self.standardization(data.isel(level=level).variables[f"{var}"].values,
@@ -54,12 +50,6 @@ class CustomImageDataset(Dataset):
                 axis=-1,
             )
 
-            # [
-            #     print("Var: " + str(var) + " Level; " + str(level)) for var in variablesWithLevels for
-            #     level in levels
-            # ]
-  
-            
             item_with_level = np.dstack((item_with_level, item_without_level))
             # print("Stack:")
             # print(item_with_level.shape)
@@ -88,13 +78,3 @@ class CustomImageDataset(Dataset):
             
 
         return items
-
-
-"""test = CustomImageDataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr',4)
-
-test = test.__getitem__(0)
-
-print(len(test))
-
-for item in test:
-    print(item)"""
