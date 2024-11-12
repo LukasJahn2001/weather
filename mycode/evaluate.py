@@ -9,7 +9,7 @@ from weatherbench2.metrics import MSE, ACC
 from weatherbench2.regions import SliceRegion, ExtraTropicalRegion
 from weatherbench2.evaluation import evaluate_in_memory, evaluate_with_beam
 
-forecast_path = '/home/lukas/datasets/date_range_2017-11-16_2019-02-01_12_hours-64x32_equiangular_conservative.zarr'
+forecast_path = '/home/lukas/datasets/firstprediction.zarr'
 obs_path = '/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr'
 climatology_path = '/home/lukas/datasets/1990-2017_6h_64x32_equiangular_conservative.zarr'
 
@@ -28,11 +28,10 @@ paths = config.Paths(
 
 selection = config.Selection(
     variables=[
-        'geopotential',
-        '2m_temperature'
+        'surface_pressure'
     ],
-    levels=[500, 700, 850],
-    time_slice=slice('2017-12-01', '2017-12-31'),
+    levels=[250, 500, 850, 925],
+    time_slice=slice('1959-1-2', '1959-1-3'),
 )
 
 data_config = config.Data(selection=selection, paths=paths)

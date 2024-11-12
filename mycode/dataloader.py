@@ -9,9 +9,9 @@ from mycode import parameters
 
 class CustomImageDataset(Dataset):
 
-    def __init__(self, filepathdata, multi_step):
+    def __init__(self, filepathdata, multi_step, startTime, endTime):
         self.multi_step = multi_step + 1
-        self.data = xr.open_zarr(filepathdata).isel(time=slice(0, 9))
+        self.data = xr.open_zarr(filepathdata).isel(time=slice(startTime, endTime))
         print(self.data)
 
     def __len__(self):
@@ -42,9 +42,9 @@ class CustomImageDataset(Dataset):
             
             item_with_level = np.stack(
                 [
-                    self.standardization(data.isel(level=level).variables[f"{var}"].values,
-                                         const.FORECAST_MEANS[var + "_" + str(level)],
-                                         const.FORECAST_STD[var + "_" + str(level)]) for var in variablesWithLevels for
+                    self.standardization(data.sel(level=level[1]).variables[f"{var}"].values,
+                                         const.FORECAST_MEANS[var + "_" + str(level[0])],
+                                         const.FORECAST_STD[var + "_" + str(level[0])]) for var in variablesWithLevels for
                     level in levels
                 ],
                 axis=-1,

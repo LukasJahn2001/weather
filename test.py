@@ -3,6 +3,7 @@ import xarray as xr
 import zarr
 import time
 import pandas as pd
+import mycode.parameters as para
 
 
 #data = xr.open_dataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr').isel(time=slice(0, 120))
@@ -13,6 +14,8 @@ data2 = xr.open_zarr('/home/lukas/datasets/date_range_2017-11-16_2019-02-01_12_h
 
 data3 = xr.open_zarr('/home/lukas/datasets/1990-2017_6h_64x32_equiangular_conservative.zarr')
 data4 = xr.open_zarr('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr') 
+data5 = xr.open_zarr('/home/lukas/git/weather/testdataset.zarr')
+
 
 # print(data4.level[4])  #250
 # print(data4.level[7])  #500
@@ -21,10 +24,15 @@ data4 = xr.open_zarr('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_
 
 # data3.variables["mean_sea_level_pressure"].values
 
-changed = data4.isel(time=slice(0, 2))
 
-print(changed.sizes.get('time'))
-print(changed)
+data6 = xr.open_zarr('/home/lukas/datasets/firstprediction.zarr')
+
+
+print(data4.isel(time=slice(0, 3)).variables("10m_u_component_of_wind").values)
+print(data6.isel(time=slice(0, 3)).variables("10m_u_component_of_wind").values)
+
+# print(changed.sizes.get('time'))
+# print(changed)
 
 
 # print(time.strftime("%H:%M:%S"))
