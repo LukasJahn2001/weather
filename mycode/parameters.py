@@ -24,6 +24,8 @@ node_dim=32
 hidden_dim_processor_node=32
 hidden_dim_decoder=32
 feature_dim = len(variablesWithLevels) * len(levels) + len(variablesWithoutLevels)
+aux_dim=0 # aux_dim: Number of non-NWP features (i.e. landsea mask, lat/lon, etc) -> feature dim + aux dim = input_dim als input in dem Encoder
+num_blocks=6
 
 learning_rate = 0.0001
 
@@ -31,6 +33,8 @@ feature_variances = []  # has to be feature dim
 for var in range(feature_dim):
     feature_variances.append(0.0)
 
+multi_step = 1
+batch_size = 8
 
 first_day = "1959-01-01T00:00:00.000000000"
 

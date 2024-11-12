@@ -22,14 +22,12 @@ print("Cuda", torch.cuda.is_available())
 #args = parser.parse_args()
 #print(type(args.dataset_path))
 
-multi_step = 1
-
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-trainDataset = CustomImageDataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr', multi_step, 0, 39)
-validationDataset = CustomImageDataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr', multi_step, 40, 49)
+trainDataset = CustomImageDataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr', para.multi_step, 0, 39)
+validationDataset = CustomImageDataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr', para.multi_step, 40, 49)
 
-trainDataloader = DataLoader(trainDataset, batch_size=1)
-validationDataloader = DataLoader(validationDataset, batch_size=1)
+trainDataloader = DataLoader(trainDataset, batch_size=para.batch_size)
+validationDataloader = DataLoader(validationDataset, batch_size=para.batch_size)
 
 
 # Here, we use enumerate(training_loader) instead of
@@ -43,9 +41,9 @@ model = GraphWeatherForecaster(
     node_dim=para.node_dim,
     hidden_dim_processor_node=para.hidden_dim_processor_node,
     hidden_dim_decoder=para.hidden_dim_decoder,
-    feature_dim=19, # feature_dim: Input feature size
-    aux_dim=0, # aux_dim: Number of non-NWP features (i.e. landsea mask, lat/lon, etc) -> feature dim + aux dim = input_dim als input in dem Encoder
-    num_blocks=6,
+    feature_dim=para.feature_dim, # feature_dim: Input feature size
+    aux_dim=para.aux_dim, # aux_dim: Number of non-NWP features (i.e. landsea mask, lat/lon, etc) -> feature dim + aux dim = input_dim als input in dem Encoder
+    num_blocks=para.num_blocks,
 ).to(device)
 
 
