@@ -20,20 +20,15 @@ parser = ArgumentParser()
 parser.add_argument('-d', '--dataset_path')
 
 args = parser.parse_args()
-datasetPath = args.dataset_path + "/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr"
-#datasetPath = args.dataset_path + "/testdataset.zarr"
-safesPath = "/home/hpc/b214cb/b214cb14/safes/run2"
+#datasetPath = args.dataset_path + "/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr"
+datasetPath = args.dataset_path + "/testdataset.zarr"
+safesPath = "/home/hpc/b214cb/b214cb14/safes/testrun"
 losses_train_path = safesPath + '/losses_train.csv'
 losses_validation_path = safesPath + '/losses_validation.csv'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-trainDataset = CustomImageDataset(datasetPath, para.multi_step, 0, 73000)
-validationDataset = CustomImageDataset(datasetPath, para.multi_step, 73001, 87600)
-
-print("Start/End Train-Dataset:")
-print("0/73000")
-print("Start/End Validation-Dataset:")
-print("73001/87600")
+trainDataset = CustomImageDataset(datasetPath, para.multi_step, 0, 50)
+validationDataset = CustomImageDataset(datasetPath, para.multi_step, 0, 50)
 
 trainDataloader = DataLoader(trainDataset, batch_size=para.batch_size)
 validationDataloader = DataLoader(validationDataset, batch_size=para.batch_size)

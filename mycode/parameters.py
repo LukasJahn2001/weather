@@ -18,11 +18,11 @@ variablesWithLevels = ['u_component_of_wind', 'v_component_of_wind', 'temperatur
 
 variablesWithoutLevels = ['surface_pressure', '10m_u_component_of_wind', '10m_u_component_of_wind']
 
-edge_dim=32
-hidden_dim_processor_edge=32
-node_dim=32
-hidden_dim_processor_node=32
-hidden_dim_decoder=32
+edge_dim=512
+hidden_dim_processor_edge=512
+node_dim=512
+hidden_dim_processor_node=512
+hidden_dim_decoder=512
 feature_dim = len(variablesWithLevels) * len(levels) + len(variablesWithoutLevels)
 aux_dim=0 # aux_dim: Number of non-NWP features (i.e. landsea mask, lat/lon, etc) -> feature dim + aux dim = input_dim als input in dem Encoder
 num_blocks=6
