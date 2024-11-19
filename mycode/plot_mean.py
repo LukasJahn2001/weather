@@ -23,7 +23,7 @@ for count in range(int(math.floor(len(y)/numberOfAvg))):
     sum = 0
     for i in range(numberOfAvg):
         sum = sum +  y[count * numberOfAvg + i]
-
+    
     b.append(sum/numberOfAvg)
     a.append(count)
     

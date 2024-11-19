@@ -9,13 +9,13 @@ from mycode import parameters
 
 class CustomImageDataset(Dataset):
 
-    def __init__(self, filepathdata, multi_step, startTime, endTime):
+    def __init__(self, filepathdata, multi_step, startTime, endTime, stepLength):
         self.multi_step = multi_step + 1
+        self.stepLength = stepLength
         self.data = xr.open_zarr(filepathdata).isel(time=slice(startTime, endTime))
-        print(self.data)
 
     def __len__(self):
-        return self.data.sizes.get('time') - self.multi_step + 1
+        return self.data.sizes.get('time') - ((self.multi_step -1) * self.stepLength)
 
 
     def standardization(self, value, mean, std):
@@ -28,7 +28,11 @@ class CustomImageDataset(Dataset):
             variablesWithLevels = parameters.variablesWithLevels
             variablesWithoutLevels = parameters.variablesWithoutLevels
 
-            data = self.data.isel(time=timestamp + step)
+
+            data = self.data.isel(time=timestamp + step * self.stepLength)
+
+            testing = data.sel(level=500).temperature
+
         
         
             # variablesWithoutLevels
@@ -73,7 +77,6 @@ class CustomImageDataset(Dataset):
             # print(are_close)
 
             items.append(torch.as_tensor(item_with_level))
-            
             # items.append(data.variables['time'])
             
 

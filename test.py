@@ -1,5 +1,6 @@
-
+from datetime import datetime, timedelta
 import xarray as xr
+import numpy as np
 import zarr
 import time
 import pandas as pd
@@ -24,12 +25,19 @@ data5 = xr.open_zarr('/home/lukas/git/weather/testdataset.zarr')
 
 # data3.variables["mean_sea_level_pressure"].values
 
+print(data)
 
-data6 = xr.open_zarr('/home/lukas/datasets/firstprediction.zarr')
+
+'''data6 = xr.open_zarr('/home/lukas/datasets/firstprediction.zarr')
+
+print(data)
+print(data6)
+
+print(data.prediction_timedelta)
+print(data6.prediction_timedelta.astype('timedelta64[ns]'))'''
 
 
-print(data4.isel(time=slice(0, 3)).variables("10m_u_component_of_wind").values)
-print(data6.isel(time=slice(0, 3)).variables("10m_u_component_of_wind").values)
+
 
 # print(changed.sizes.get('time'))
 # print(changed)

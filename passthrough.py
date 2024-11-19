@@ -1,9 +1,12 @@
+from datetime import datetime, timedelta
+
 import torch
 from torch.utils.data import DataLoader
 import xarray as xr
 import numpy as np
 import pandas as pd
 from mycode import const
+import time as t
 
 
 
@@ -31,14 +34,14 @@ multi_step = 1
 
 model.load_state_dict(torch.load("/home/lukas/safes/safe.ckt", map_location=torch.device('cpu')))
 
-dataset = CustomImageDataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr', multi_step, 0, 10)
+dataset = CustomImageDataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr', multi_step, 0, 100, 1)
 dataloader = DataLoader(dataset, batch_size=1)
 
 dates = pd.date_range(start='1/1/1959', periods=len(dataloader), freq='6h')
 startTime = 0
 endTime = 0
 
-vars = []
+vars = [] #TODO namen anpassen
 for var in para.variablesWithLevels:
      for lvl in para.levels:
           vars.append([var, lvl])
@@ -51,14 +54,14 @@ for var in para.variablesWithoutLevels:
 newDataset = xr.Dataset(
     coords={'longitude': ('longitude', para.long),
             'latitude': ('latitude', para.latt),
-            'level': ('level', para.all_levels),
-            'prediction_timedelta': ('prediction_timedelta', np.arange(0, 41, 1, dtype='i8')*21600000000000),
+            'level': ('level', para.selected_levels),
+            'prediction_timedelta': ('prediction_timedelta', (np.arange(0, 41, 1, dtype='timedelta64[ns]')*21600000000000)),
             'time': ('time', pd.date_range(start='1/1/1959', periods=len(dataloader), freq='6h'))
     }
 )
 
 for var in para.variablesWithLevels:
-    newDataset[var] = (('time', 'latitude', 'longitude', 'level', 'prediction_timedelta'), np.zeros((len(dataloader), len(para.latt), len(para.long), len(para.all_levels), 41), dtype='f4'))
+    newDataset[var] = (('time', 'latitude', 'longitude', 'level', 'prediction_timedelta'), np.zeros((len(dataloader), len(para.latt), len(para.long), len(para.selected_levels), 41), dtype='f4'))
 
 for var in para.variablesWithoutLevels:
     newDataset[var] = (('time', 'latitude', 'longitude', 'prediction_timedelta'), np.zeros((len(dataloader), len(para.latt), len(para.long),  41), dtype='f4'))
@@ -68,7 +71,7 @@ for var in para.variablesWithoutLevels:
 # print(newDataset.variables['u_component_of_wind'].shape)
 # print(newDataset['u_component_of_wind'].sel(time=dates[0], prediction_timedelta=21600000000000, level=4))
 
-def destandardization(self, value, mean, std):
+def destandardization(value, mean, std):
         return (value * std) + mean
 
 def turn_to_array (prediction, j, time):
@@ -83,9 +86,17 @@ def turn_to_array (prediction, j, time):
     for i in range(prediction.shape[2]):
         var = vars[i]
         if(var[1] == None):
-            newDataset[var[0]].loc[dict(time=date, prediction_timedelta=prediction_timedelta)] = prediction[:, :, 0].transpose(0, 1).detach().numpy()
+            variable_name = str(var[0])
+            variable = prediction[:, :, 0].transpose(0, 1).detach().numpy()
+            variable = [destandardization(var, const.FORECAST_MEANS[variable_name], const.FORECAST_STD[variable_name])
+                        for var in variable]
+            newDataset[var[0]].loc[dict(time=date, prediction_timedelta=np.timedelta64(prediction_timedelta))] = variable
         else:
-            newDataset[var[0]].loc[dict(time=date, prediction_timedelta=prediction_timedelta, level=var[1][1])] = prediction[:, :, 0].transpose(0, 1).detach().numpy()
+            variable_name = str(var[0]) + "_" + str(var[1][0])
+            variable = prediction[:, :, 0].transpose(0, 1).detach().numpy()
+            variable = [destandardization(var, const.FORECAST_MEANS[variable_name], const.FORECAST_STD[variable_name])
+                        for var in variable]
+            newDataset[var[0]].loc[dict(time=date, prediction_timedelta=np.timedelta64(prediction_timedelta), level=var[1][1])] = variable
         
 
         # for long in range(prediction.shape[0]):
@@ -100,23 +111,25 @@ def turn_to_array (prediction, j, time):
 # TODO Passthrough schöner und fertig
 # TODO Parameterdatei erstellen
 
-time = startTime 
-for data in dataloader:
-    print(time)
-    for j in range(0, 41):
-        print("j: " + str(j))
-        if(j != 0):
-            #hier muss 1 bis 40 mal der passthrough gemacht werden -> 6h bis 10d in 6h Schritten
-            prediction = model(prediction)
-        else: 
-            #tag 0 ist ohne passthrough
-            prediction = data[0]
+time = startTime
+with torch.no_grad(): 
+    for data in dataloader:
+        print(time)
+        for j in range(0, 41):
+            print("j: " + str(j))
+            if(j != 0):
+                #hier muss 1 bis 40 mal der passthrough gemacht werden -> 6h bis 10d in 6h Schritten
+                prediction = model(prediction)
+            else: 
+                #tag 0 ist ohne passthrough
+                prediction = data[0]
 
-        
+            
 
-        turn_to_array(prediction[0], j, time)
+            turn_to_array(prediction[0], j, time)
 
-    time = time + 1
+        time = time + 1
+        end_time = t.time()
 
 newDataset.to_zarr("predictions/directory.zarr")
         
