@@ -12,7 +12,7 @@ class CustomImageDataset(Dataset):
     def __init__(self, filepathdata, multi_step, startTime, endTime, stepLength):
         self.multi_step = multi_step + 1
         self.stepLength = stepLength
-        self.data = xr.open_zarr(filepathdata).isel(time=slice(startTime, endTime))
+        self.data = xr.open_zarr(filepathdata).sel(time=slice(np.datetime64(startTime), np.datetime64(endTime)))
 
     def __len__(self):
         return self.data.sizes.get('time') - ((self.multi_step -1) * self.stepLength)

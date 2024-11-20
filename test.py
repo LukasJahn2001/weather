@@ -25,7 +25,7 @@ data5 = xr.open_zarr('/home/lukas/git/weather/testdataset.zarr')
 
 # data3.variables["mean_sea_level_pressure"].values
 
-print(data)
+#print(data)
 
 
 '''data6 = xr.open_zarr('/home/lukas/datasets/firstprediction.zarr')
@@ -50,6 +50,15 @@ print(data6.prediction_timedelta.astype('timedelta64[ns]'))'''
 
 # print(pd.date_range(start='1/1/1959', periods=(4*365), freq='6h'))
 
+# print(data4.sel(time = np.datetime64('2020-01-01')))
+# print(data4.sizes.get("time"))
+print(data4.time)
+test = data4.sel(time=slice(np.datetime64('2020-01-01T00'), np.datetime64('2020-12-31T18')))
+#test = data4.isel(time=slice(89060, 90520))
+print(test.sizes.get("time"))
+times = test.time
+print(times[0])
+print(times[-1])
 '''
 
 

@@ -32,13 +32,18 @@ feature_variances = []  # has to be feature dim
 for var in range(feature_dim):
     feature_variances.append(0.0)
 
-multi_step = 2
+multi_step = 1
 batch_size = 1
-stepLength = 2
-
-first_day = "1959-01-01T00:00:00.000000000"
+stepLength = 1
 
 softStart = False
 softStartTrainOffset = 0
 softStartValidationOffset = 0
+
+start_time_train = '1959-01-01T00'
+end_time_train = '2009-12-31T18'
+start_time_validation = '2010-01-01T00'
+end_time_validation = '2010-12-31T18'
+start_time_evaluation = '2020-01-01T00'
+end_time_evaluation = '2020-12-31T18'
 

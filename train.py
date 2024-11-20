@@ -27,13 +27,9 @@ losses_train_path = safesPath + '/losses_train.csv'
 losses_validation_path = safesPath + '/losses_validation.csv'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-trainDataset = CustomImageDataset(datasetPath, para.multi_step, 0, 73000)
-validationDataset = CustomImageDataset(datasetPath, para.multi_step, 73001, 87600)
+trainDataset = CustomImageDataset(datasetPath, para.multi_step, para.start_time_train, para.end_time_train, para.stepLength)
+validationDataset = CustomImageDataset(datasetPath, para.multi_step, para.start_time_validation, para.end_time_validation, para.stepLength)
 
-print("Start/End Train-Dataset:")
-print("0/73000")
-print("Start/End Validation-Dataset:")
-print("73001/87600")
 
 trainDataloader = DataLoader(trainDataset, batch_size=para.batch_size)
 validationDataloader = DataLoader(validationDataset, batch_size=para.batch_size)
