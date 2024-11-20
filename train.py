@@ -20,16 +20,15 @@ parser = ArgumentParser()
 parser.add_argument('-d', '--dataset_path')
 
 args = parser.parse_args()
-#datasetPath = args.dataset_path + "/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr"
-datasetPath = "testdataset.zarr"
-#safesPath = "/home/hpc/b214cb/b214cb14/safes/run2"
-safesPath = "/home/lukas/git/weather/run"
+datasetPath = args.dataset_path + "/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr"
+#datasetPath = args.dataset_path + "/testdataset.zarr"
+safesPath = "/home/hpc/b214cb/b214cb14/safes/run2"
 losses_train_path = safesPath + '/losses_train.csv'
 losses_validation_path = safesPath + '/losses_validation.csv'
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-trainDataset = CustomImageDataset(datasetPath, para.multi_step, 0, 9, para.stepLength)
-validationDataset = CustomImageDataset(datasetPath, para.multi_step, 10, 19, para.stepLength)
+trainDataset = CustomImageDataset(datasetPath, para.multi_step, 0, 73000)
+validationDataset = CustomImageDataset(datasetPath, para.multi_step, 73001, 87600)
 
 print("Start/End Train-Dataset:")
 print("0/73000")
@@ -95,11 +94,14 @@ criterion = NormalizedMSELoss(lat_lons=para.lat_lons,
 optimizer = optim.Adam(model.parameters(), lr=para.learning_rate)
 counter_train = 0
 counter_validation = 0
+epoch_offset = 0
+
 
 if(para.softStart):
-    model.load_state_dict(torch.load(safesPath + "", map_location=device))
+    model.load_state_dict(torch.load("/home/hpc/b214cb/b214cb14/safes/run2/safe9.ckt", map_location=device))
     counter_train = para.softStartTrainOffset + 1
     counter_validation = para.softStartValidationOffset + 1
+    epoch_offset = para.epoch_offset + 1
 
 
 
@@ -107,7 +109,8 @@ print("Done Setup")
 
 
 
-for epoch in range(20):
+for epoch in range(10):
+    epoch = epoch + epoch_offset
     #Train
     with open(losses_train_path, 'a', newline='') as file:
         writer = csv.writer(file)
@@ -193,4 +196,3 @@ print("Finished Training")
     # TODO: Validation loss
     # TODO: Level fixen
     # TODO: Zeitplan (ENDE: Dezember)
-    # TODO: Multistep warmstart
