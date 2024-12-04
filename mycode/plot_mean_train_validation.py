@@ -26,8 +26,8 @@ b = []
 c = []
 
 # ceil((length - multistep)/ batch-size )* multistep)
-numberOfAvgTrain = 9125 #31181
-numberOfAvgValidation = 1825
+numberOfAvgTrain = 9314 #31181
+numberOfAvgValidation = 183
 
 print(type(y_t))
 
@@ -43,7 +43,6 @@ for count in range(int(math.floor(len(y_v)/numberOfAvgValidation))):
     sum = 0
     for i in range(numberOfAvgValidation):
         sum = sum +  y_v[count * numberOfAvgValidation + i]
-    
     c.append(sum/numberOfAvgValidation)
     
 

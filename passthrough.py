@@ -37,13 +37,15 @@ model.load_state_dict(torch.load("/home/lukas/safes/safe.ckt", map_location=torc
 dataset = CustomImageDataset('/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr', 1, para.start_time_evaluation, para.end_time_evaluation, para.stepLength)
 dataloader = DataLoader(dataset, batch_size=1)
 
-vars = [] #TODO namen anpassen
-for var in para.variablesWithLevels:
-     for lvl in para.levels:
-          vars.append([var, lvl])
 
+vars = []  # TODO namen anpassen
 for var in para.variablesWithoutLevels:
-     vars.append([var, None])
+    vars.append([var, None])
+
+for var in para.variablesWithLevels:
+    for lvl in para.levels:
+        vars.append([var, lvl])
+
 
 
 newDataset = xr.Dataset(
@@ -66,30 +68,24 @@ def destandardization(value, mean, std):
         return (value * std) + mean
 
 def turn_to_array (prediction, j, time):
-    prediction = prediction.reshape((para.feature_dim, len(para.latt), len(para.long))).T
-    # time delta for prediction in ns
     prediction_timedelta = j * 21600000000000
-
-    print(prediction[:, :, 0].transpose(0, 1).shape)
-    print(prediction[:, :, 0].detach().numpy().shape)
-
-    for i in range(prediction.shape[2]):
+    prediction = prediction.reshape((len(prediction), len(para.long), len(para.latt)))
+    
+    for i in range(len(prediction)):
         var = vars[i]
-        if(var[1] == None):
+        if var[1] is None:
             variable_name = str(var[0])
-            variable = prediction[:, :, 0].transpose(0, 1).detach().numpy()
-            variable = [destandardization(var, const.FORECAST_MEANS[variable_name], const.FORECAST_STD[variable_name])
-                        for var in variable]
-            newDataset[var[0]].loc[dict(time=time, prediction_timedelta=np.timedelta64(prediction_timedelta))] = variable
+            variable = prediction[i].detach().numpy()#
+            variable = [destandardization(value, const.FORECAST_MEANS[variable_name], const.FORECAST_STD[variable_name]) for value in variable]
+            newDataset[var[0]].loc[
+                dict(time=time, prediction_timedelta=np.timedelta64(prediction_timedelta))] = variable
         else:
             variable_name = str(var[0]) + "_" + str(var[1][0])
-            variable = prediction[:, :, 0].transpose(0, 1).detach().numpy()
-            variable = [destandardization(var, const.FORECAST_MEANS[variable_name], const.FORECAST_STD[variable_name])
-                        for var in variable]
-            newDataset[var[0]].loc[dict(time=time, prediction_timedelta=np.timedelta64(prediction_timedelta), level=var[1][1])] = variable
-        
-
-    
+            variable = prediction[i].detach().numpy()
+            variable = [destandardization(value, const.FORECAST_MEANS[variable_name], const.FORECAST_STD[variable_name])
+                        for value in variable]
+            newDataset[var[0]].loc[
+                dict(time=time, prediction_timedelta=np.timedelta64(prediction_timedelta), level=var[1][1])] = variable
     return 0
 
 # TODO Training mit validation Kurve von loss

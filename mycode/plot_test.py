@@ -15,7 +15,7 @@ a = []
 b = []
 
 # ceil((length - multistep)/ batch-size )* multistep)
-numberOfAvg = 1  #31181
+numberOfAvg = 1  # 31181
 
 for count in range(int(math.floor(len(y) / numberOfAvg))):
     sum = 0
@@ -24,8 +24,6 @@ for count in range(int(math.floor(len(y) / numberOfAvg))):
 
     b.append(sum / numberOfAvg)
     a.append(count)
-
-    print(str(count) + "," + str(sum / numberOfAvg))
 
 plt.plot(a, b, color='g', linestyle='dashed',
          marker='o', label="Weather Data")

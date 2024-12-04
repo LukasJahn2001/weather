@@ -15,11 +15,10 @@ class CustomImageDataset(Dataset):
         self.data = xr.open_zarr(filepathdata).sel(time=slice(np.datetime64(startTime), np.datetime64(endTime)))
 
     def __len__(self):
-        return self.data.sizes.get('time') - ((self.multi_step -1) * self.stepLength)
-
+        return self.data.sizes.get('time') - ((self.multi_step - 1) * self.stepLength)
 
     def standardization(self, value, mean, std):
-        return (value - mean) / std
+        return value #(value - mean) / std
 
     def __getitem__(self, timestamp):
         items = []
@@ -28,56 +27,31 @@ class CustomImageDataset(Dataset):
             variablesWithLevels = parameters.variablesWithLevels
             variablesWithoutLevels = parameters.variablesWithoutLevels
 
-
             data = self.data.isel(time=timestamp + step * self.stepLength)
-
-            testing = data.sel(level=500).temperature
-
-        
-        
             # variablesWithoutLevels
             item_without_level = np.stack(
                 [
-                    self.standardization(data.variables[var].values, const.FORECAST_MEANS[var], const.FORECAST_STD[var]) for
+                    self.standardization(data.variables[var].values, const.FORECAST_MEANS[var], const.FORECAST_STD[var])
+                    for
                     var in variablesWithoutLevels
                 ],
-                axis=-1,
+                axis=0,
             )
-            
+
             item_with_level = np.stack(
                 [
                     self.standardization(data.sel(level=level[1]).variables[f"{var}"].values,
                                          const.FORECAST_MEANS[var + "_" + str(level[0])],
-                                         const.FORECAST_STD[var + "_" + str(level[0])]) for var in variablesWithLevels for
+                                         const.FORECAST_STD[var + "_" + str(level[0])]) for var in variablesWithLevels
+                    for
                     level in levels
                 ],
-                axis=-1,
+                axis=0,
             )
 
-            item_with_level = np.dstack((item_with_level, item_without_level))
-            # print("Stack:")
-            # print(item_with_level.shape)
-            # print(item_with_level)
-            # start = item_with_level
+            all_levels = np.concatenate((item_without_level, item_with_level))
+            all_levels = all_levels.reshape((len(all_levels), -1))
 
-            item_with_level = item_with_level.T.reshape((-1, item_with_level.shape[-1]))
-            # print("Reshape:")
-            # print(item_with_level.shape)
-            # print(item_with_level)
-
-            # original_shape = start.shape
-            # reversed_result = item_with_level.reshape((20, 32, 64)).T
-
-            # print("Original reversed:")
-            # print(reversed_result.shape)
-            # print(reversed_result)
-
-            # print("Are close:")
-            # are_close = np.allclose(start, reversed_result)
-            # print(are_close)
-
-            items.append(torch.as_tensor(item_with_level))
-            # items.append(data.variables['time'])
-            
+            items.append(torch.as_tensor(all_levels))
 
         return items

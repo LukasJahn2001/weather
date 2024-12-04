@@ -9,7 +9,8 @@ from weatherbench2.metrics import MSE, ACC
 from weatherbench2.regions import SliceRegion, ExtraTropicalRegion
 from weatherbench2.evaluation import evaluate_in_memory, evaluate_with_beam
 
-forecast_path = '/home/lukas/datasets/firstprediction.zarr'
+forecast_path = '/home/lukas/datasets/predictions2.zarr'
+#forecast_path = '/home/lukas/datasets/firstprediction.zarr'
 forecast_path_original = '/home/lukas/datasets/2020-64x32_equiangular_conservative.zarr'
 obs_path = '/home/lukas/datasets/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr'
 climatology_path = '/home/lukas/datasets/1990-2017_6h_64x32_equiangular_conservative.zarr'
@@ -29,10 +30,10 @@ paths = config.Paths(
 
 selection = config.Selection(
     variables=[
-        'surface_pressure', 'temperature'
+        'temperature'
     ],
-    levels=[850],
-    time_slice=slice('1959-1-2', '1959-1-24'),
+    levels=[250, 500, 850, 925],
+    time_slice=slice('2020-01-01', '2020-12-31'),
 )
 
 data_config = config.Data(selection=selection, paths=paths)
@@ -76,9 +77,7 @@ results = xr.concat(
 
 print(results)
 
-results['temperature' ].sel(metric='rmse', level=250).plot()
-results['temperature' ].sel(metric='rmse', level=500).plot()
-results['temperature' ].sel(metric='rmse', level=850).plot()
-results['temperature' ].sel(metric='rmse', level=925).plot()# , level=500, wenn man level benötigt
+results['temperature'].sel(metric='mse', level=925).plot()
+
 
 plt.show()

@@ -16,13 +16,14 @@ torch.manual_seed(0)
 
 print("Cuda", torch.cuda.is_available())
 
-parser = ArgumentParser()
+'''parser = ArgumentParser()
 parser.add_argument('-d', '--dataset_path')
 
-args = parser.parse_args()
-datasetPath = args.dataset_path + "/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr"
-#datasetPath = args.dataset_path + "/testdataset.zarr"
-safesPath = "/home/hpc/b214cb/b214cb14/safes/run2"
+
+args = parser.parse_args()'''
+#datasetPath = args.dataset_path + "/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr"
+datasetPath = "testdataset.zarr"
+safesPath = "/home/lukas/git/weather"
 losses_train_path = safesPath + '/losses_train.csv'
 losses_validation_path = safesPath + '/losses_validation.csv'
 
@@ -184,11 +185,8 @@ for epoch in range(10):
             print("Validation-Epoch " + str(epoch) + ": " + str(end_epoch - start_epoch) + "s")
 
 
-
-
 print("Finished Training")
 
-    # TODO: Warmstart / Job chaining
-    # TODO: Validation loss
-    # TODO: Level fixen
-    # TODO: Zeitplan (ENDE: Dezember)
+# TODO: Overfitting test
+# TODO: Modell weiter trainieren
+# TODO: Passthrough fixen

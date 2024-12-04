@@ -11,7 +11,7 @@ for lat in latt:
     for lon in long:
         lat_lons.append((lat, lon))
 
-levels = [[4, 250], [7, 500], [10, 850], [11, 925]]  # 250, 500, 850, 925 #
+levels = [[4, 250], [7, 500], [10, 850], [11, 925]]  # 250, 500, 850, 925 #TODO: Überprüfen ob das so stimmt
 
 variablesWithLevels = ['u_component_of_wind', 'v_component_of_wind', 'temperature', 'relative_humidity']
 
@@ -39,11 +39,12 @@ stepLength = 1
 softStart = False
 softStartTrainOffset = 0
 softStartValidationOffset = 0
+epoch_offset = 0
 
 start_time_train = '1959-01-01T00'
-end_time_train = '2009-12-31T18'
-start_time_validation = '2010-01-01T00'
-end_time_validation = '2010-12-31T18'
+end_time_train = '1959-01-01T06'
+start_time_validation = '1959-03-01T00'
+end_time_validation = '1959-04-01T00'
 start_time_evaluation = '2020-01-01T00'
-end_time_evaluation = '2020-12-31T18'
+end_time_evaluation = '2020-01-10T18'
 

@@ -5,7 +5,7 @@ import csv
 x = [] 
 y = []
   
-with open('/home/lukas/git/weather/losses.csv','r') as csvfile: 
+with open('/home/lukas/git/weather/losses_runs.csv','r') as csvfile:
     lines = csv.reader(csvfile, delimiter=',') 
     for row in lines: 
         x.append(row[0]) 
