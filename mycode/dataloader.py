@@ -18,7 +18,7 @@ class CustomImageDataset(Dataset):
         return self.data.sizes.get('time') - ((self.multi_step - 1) * self.stepLength)
 
     def standardization(self, value, mean, std):
-        return value #(value - mean) / std
+        return (value - mean) / std
 
     def __getitem__(self, timestamp):
         items = []
@@ -51,7 +51,8 @@ class CustomImageDataset(Dataset):
 
             all_levels = np.concatenate((item_without_level, item_with_level))
             all_levels = all_levels.reshape((len(all_levels), -1))
-
+            
+            all_levels = all_levels.swapaxes(1, 0)
             items.append(torch.as_tensor(all_levels))
 
         return items

@@ -15,13 +15,13 @@ levels = [[4, 250], [7, 500], [10, 850], [11, 925]]  # 250, 500, 850, 925 #TODO:
 
 variablesWithLevels = ['u_component_of_wind', 'v_component_of_wind', 'temperature', 'relative_humidity']
 
-variablesWithoutLevels = ['surface_pressure', '10m_u_component_of_wind', '10m_u_component_of_wind']
+variablesWithoutLevels = ['surface_pressure', '10m_u_component_of_wind', '10m_u_component_of_wind', "2m_temperature"]
 
-edge_dim = 32
-hidden_dim_processor_edge = 32
-node_dim = 32
-hidden_dim_processor_node = 32
-hidden_dim_decoder = 32
+edge_dim = 512
+hidden_dim_processor_edge = 512
+node_dim = 512
+hidden_dim_processor_node = 512
+hidden_dim_decoder = 512
 feature_dim = len(variablesWithLevels) * len(levels) + len(variablesWithoutLevels)
 aux_dim = 0  # aux_dim: Number of non-NWP features (i.e. landsea mask, lat/lon, etc) -> feature dim + aux dim = input_dim als input in dem Encoder
 num_blocks = 6
@@ -36,15 +36,15 @@ multi_step = 1
 batch_size = 1
 stepLength = 1
 
-softStart = False
-softStartTrainOffset = 0
-softStartValidationOffset = 0
-epoch_offset = 0
+softStart = True
+softStartTrainOffset = 894131
+softStartValidationOffset = 17507
+epoch_offset = 11
 
 start_time_train = '1959-01-01T00'
-end_time_train = '1959-01-01T06'
-start_time_validation = '1959-03-01T00'
-end_time_validation = '1959-04-01T00'
+end_time_train = '2009-12-31T18'
+start_time_validation = '2010-01-01T00'
+end_time_validation = '2010-12-31T18'
 start_time_evaluation = '2020-01-01T00'
-end_time_evaluation = '2020-01-10T18'
+end_time_evaluation = '2020-12-31T18'
 

@@ -16,14 +16,14 @@ torch.manual_seed(0)
 
 print("Cuda", torch.cuda.is_available())
 
-'''parser = ArgumentParser()
+parser = ArgumentParser()
 parser.add_argument('-d', '--dataset_path')
 
 
-args = parser.parse_args()'''
-#datasetPath = args.dataset_path + "/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr"
-datasetPath = "testdataset.zarr"
-safesPath = "/home/lukas/git/weather"
+args = parser.parse_args()
+datasetPath = args.dataset_path + "/1959-2023_01_10-6h-64x32_equiangular_conservative.zarr"
+#datasetPath = "testdataset.zarr"
+safesPath = "/home/hpc/b214cb/b214cb14/safes/run5"
 losses_train_path = safesPath + '/losses_train.csv'
 losses_validation_path = safesPath + '/losses_validation.csv'
 
@@ -95,7 +95,7 @@ epoch_offset = 0
 
 
 if(para.softStart):
-    model.load_state_dict(torch.load("/home/hpc/b214cb/b214cb14/safes/run2/safe9.ckt", map_location=device))
+    model.load_state_dict(torch.load("/home/hpc/b214cb/b214cb14/safes/run5/safe11.ckt", map_location=device))
     counter_train = para.softStartTrainOffset + 1
     counter_validation = para.softStartValidationOffset + 1
     epoch_offset = para.epoch_offset + 1
